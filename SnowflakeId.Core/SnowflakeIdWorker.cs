@@ -100,6 +100,24 @@ namespace SnowflakeId.Core
         /// 获得下一个ID (该方法是线程安全的)
         /// </summary>
         /// <returns></returns>
+        public string Next(string delimiter)
+        {
+            lock (LockObj)
+            {
+                string id=Base36Converter.Encode(GenerateId());
+                if (!string.IsNullOrEmpty(delimiter))
+                {
+                    id = id.Insert(4, delimiter);
+                    id = id.Insert(9, delimiter);
+                }
+                return id;
+            }
+        }
+
+        /// <summary>
+        /// 获得下一个ID (该方法是线程安全的)
+        /// </summary>
+        /// <returns></returns>
         public long NextId()
         {
             lock (LockObj)
