@@ -1,6 +1,10 @@
-﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SnowflakeId.Core;
+using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace SnowflakeId.Test
 {
@@ -20,6 +24,30 @@ namespace SnowflakeId.Test
             Assert.IsTrue(id1 != id2);
             Console.WriteLine(id1);
             Console.WriteLine(id2);
+        }
+
+        [TestMethod]
+        public void NextId_Duplicate_issues_2_Test()
+        {
+            var snowflakeIdWorker = new SnowflakeIdWorker(1, 1);
+            var blockingCollection = new BlockingCollection<long>();
+            var tasks = new List<Task>();
+            for (int i = 0; i < 100; i++)
+            {
+                var task = Task.Run(() =>
+                {
+                    for (int j = 0; j < 10000; j++)
+                    {
+                        blockingCollection.Add(snowflakeIdWorker.NextId());
+                    }
+                });
+
+                tasks.Add(task);
+            }
+
+            Task.WaitAll(tasks.ToArray());
+
+            Assert.AreEqual(1000000, blockingCollection.Distinct().Count());
         }
     }
 }
