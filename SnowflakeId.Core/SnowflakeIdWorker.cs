@@ -100,7 +100,7 @@ namespace SnowflakeId.Core
         /// 获得下一个ID (该方法是线程安全的)
         /// </summary>
         /// <returns></returns>
-        public string Next(string delimiter)
+        public string Next(string delimiter = null)
         {
             lock (LockObj)
             {

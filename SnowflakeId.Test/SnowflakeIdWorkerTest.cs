@@ -49,5 +49,27 @@ namespace SnowflakeId.Test
 
             Assert.AreEqual(1000000, blockingCollection.Distinct().Count());
         }
+
+        [TestMethod]
+        public void Next_Base36_Test()
+        {
+            var snowflakeIdWorker = new SnowflakeIdWorker(1, 1);
+            for (int i = 0; i < 1000; i++)
+            {
+                Console.WriteLine(snowflakeIdWorker.Next());
+            }
+        }
+
+        [TestMethod]
+        public void Next_Base36_Decode_Test()
+        {
+            var snowflakeIdWorker = new SnowflakeIdWorker(1, 1);
+            var nextId = snowflakeIdWorker.NextId();
+            var encode = Base36Converter.Encode(nextId);
+            var decode = Base36Converter.Decode(encode);
+
+            Console.WriteLine(encode);
+            Assert.AreEqual(nextId, decode);
+        }
     }
 }

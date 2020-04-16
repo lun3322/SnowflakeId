@@ -19,5 +19,8 @@ namespace SnowflakeId
 
         [Benchmark]
         public long GenerateId() => Worker.NextId();
+
+        [Benchmark]
+        public string GenerateBase36Id() => Worker.Next();
     }
 }
